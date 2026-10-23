@@ -5,7 +5,7 @@ ubi ai api-key api-key-id [post-command] ...
 ubi ai api-key create
 ubi ai api-key list [options]
 ubi ai api-key api-key-id destroy [options]
-ubi ai api-key api-key-id show
+ubi ai api-key api-key-id show [options]
 ubi ai endpoint [command] ...
 ubi ai endpoint list [options]
 ubi al command [...]

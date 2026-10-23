@@ -75,7 +75,10 @@ Options:
 Show details for an inference API key
 
 Usage:
-    ubi ai api-key api-key-id show
+    ubi ai api-key api-key-id show [options]
+
+Options:
+        --reveal                     show the full API key
 
 
 Manage AI inference endpoints
@@ -1175,6 +1178,7 @@ Usage:
 
 Options:
     -f, --fields=fields              show specific fields (comma separated)
+        --reveal                     show the superuser password in connection strings
 
 Allowed Option Values:
     Fields: id name state location vm-size target-vm-size storage-size-gib

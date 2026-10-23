@@ -477,6 +477,10 @@ class UbiCli
     Gem::Version.new(/\A(\d+)\.(\d+)\.(\d+)\z/.match?(client_version) ? client_version : "0.0.0")
   end
 
+  def masked_api_key(key)
+    "********#{key[-4..]}"
+  end
+
   def invalid_confirmation(message)
     response(message, status: 400)
   end

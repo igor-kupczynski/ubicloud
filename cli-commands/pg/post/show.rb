@@ -5,9 +5,11 @@ class UbiCli
     desc "Show details for a PostgreSQL database"
 
     fields = %w[id name state location vm-size target-vm-size storage-size-gib target-storage-size-gib version target-version ha-type flavor connection-string private-connection-string primary earliest-restore-time maintenance-window-start-at read-replica parent tags firewall-rules metric-destinations log-destinations read-replicas ca-certificates].freeze.each(&:freeze)
+    password_fields = %w[connection-string private-connection-string].freeze.each(&:freeze)
 
     options("ubi pg (location/pg-name | pg-id) show [options]", key: :pg_show) do
       on("-f", "--fields=fields", "show specific fields (comma separated)")
+      on("--reveal", "show the superuser password in connection strings")
     end
     help_option_values("Fields:", fields)
 
@@ -15,6 +17,11 @@ class UbiCli
       data = sdk_object.info
       opts = opts[:pg_show]
       keys = check_fields(opts[:fields], fields, "pg show -f option", cmd)
+      reveal = opts[:reveal]
+
+      if opts[:fields] && !reveal && !(password_keys = keys & password_fields).empty?
+        cmd.raise_failure("field(s) containing the superuser password require --reveal: #{password_keys.join(",")}")
+      end
 
       body = []
 
@@ -53,6 +60,13 @@ class UbiCli
           sdk_object.read_replicas.each do |rr|
             body << "  " << rr[:location] << "/" << rr[:name] << "\n"
           end
+        when :connection_string, :private_connection_string
+          conn_string = data[key]
+          unless reveal
+            conn_string = URI(conn_string)
+            conn_string.password = "********"
+          end
+          body << display_key << ": " << conn_string.to_s << "\n"
         when :ca_certificates
           body << "ca-certificates:\n" << data[key].to_s << "\n"
         else

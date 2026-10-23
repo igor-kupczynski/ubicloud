@@ -12,7 +12,7 @@ class UbiCli
 
     run do |opts|
       opts = opts[key]
-      items = sdk.inference_api_key.list
+      items = sdk.inference_api_key.list.map { {id: it.id, key: masked_api_key(it.key)} }
       response(format_rows(%i[id key], items, headers: opts[:"no-headers"] != false))
     end
   end

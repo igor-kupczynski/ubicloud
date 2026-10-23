@@ -37,8 +37,8 @@ RSpec.describe Clover, "cli pg show" do
       target-version: 18
       ha-type: none
       flavor: standard
-      connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
-      private-connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.private.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+      connection-string: postgres://postgres:********@test-pg.#{@pg.ubid}.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+      private-connection-string: postgres://postgres:********@test-pg.#{@pg.ubid}.private.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
       primary: true
       earliest-restore-time: 
       maintenance-window-start-at: 
@@ -74,8 +74,8 @@ RSpec.describe Clover, "cli pg show" do
       target-version: 18
       ha-type: none
       flavor: standard
-      connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
-      private-connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.private.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+      connection-string: postgres://postgres:********@test-pg.#{@pg.ubid}.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+      private-connection-string: postgres://postgres:********@test-pg.#{@pg.ubid}.private.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
       primary: true
       earliest-restore-time: 
       maintenance-window-start-at: 
@@ -113,5 +113,20 @@ RSpec.describe Clover, "cli pg show" do
       id: #{@pg.ubid}
       name: test-pg
     END
+  end
+
+  it "--reveal shows the superuser password in connection strings" do
+    expect(Config).to receive(:postgres_service_hostname_v3).and_return("pg.example.com").at_least(:once)
+    DnsZone.create(project_id: @project.id, name: "pg.example.com")
+
+    expect(cli(%W[pg #{@ref} show -f connection-string,private-connection-string --reveal])).to eq <<~END
+      connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+      private-connection-string: postgres://postgres:#{@pg.superuser_password}@test-pg.#{@pg.ubid}.private.pg.example.com:5432/postgres?sslmode=require&channel_binding=require
+    END
+  end
+
+  it "-f option fails for connection strings unless --reveal is given" do
+    expect(cli(%W[pg #{@ref} show -f id,connection-string], status: 400)).to start_with "! Field(s) containing the superuser password require --reveal: connection-string\n"
+    expect(cli(%W[pg #{@ref} show -f private-connection-string,connection-string], status: 400)).to start_with "! Field(s) containing the superuser password require --reveal: private-connection-string,connection-string\n"
   end
 end

@@ -7,6 +7,7 @@ Usage:
 
 Options:
     -f, --fields=fields              show specific fields (comma separated)
+        --reveal                     show the superuser password in connection strings
 
 Allowed Option Values:
     Fields: id name state location vm-size target-vm-size storage-size-gib

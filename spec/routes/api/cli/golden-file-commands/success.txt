@@ -13,6 +13,7 @@ ai endpoint list
 ai endpoint list -N
 ai endpoint list -f name,hf-model,url
 ai api-key ak2c0j48r8kj4nharh6yagf3eb show
+ai api-key ak2c0j48r8kj4nharh6yagf3eb show --reveal
 ai api-key ak2c0j48r8kj4nharh6yagf3eb destroy -f
 fw eu-central-h1/default-eu-central-h1-default delete-rule fr7cv7h5bz324maazy93ykn8s4
 fw eu-central-h1/default-eu-central-h1-default detach-subnet psfzm9e26xky5m9ggetw4dpqe2
@@ -113,8 +114,9 @@ pg eu-central-h1/test-pg list-backups
 pg eu-central-h1/test-pg reset-superuser-password foo123BAR456
 pg eu-central-h1/test-pg restart
 pg eu-central-h1/test-pg show
+pg eu-central-h1/test-pg show --reveal
 pg eu-central-h1/test-pg show -f firewall-rules,metric-destinations,ca-certificates
-pg eu-central-h1/test-pg show -f ha-type,flavor,connection-string,primary,earliest-restore-time
+pg eu-central-h1/test-pg show -f ha-type,flavor,connection-string,primary,earliest-restore-time --reveal
 pg eu-central-h1/test-pg show -f id
 pg eu-central-h1/test-pg show -f name,state,location,vm-size,storage-size-gib,version,tags
 pg eu-central-h1/test-pg show -f maintenance-window-start-at,read-replica,parent,read-replicas
